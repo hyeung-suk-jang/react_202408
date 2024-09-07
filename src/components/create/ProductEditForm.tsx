@@ -98,7 +98,7 @@ const ProductEditForm = () => {
               marginTop: 6,
             }}
           >
-            생성
+            상품 수정
           </Button>
         </form>
       </Container>

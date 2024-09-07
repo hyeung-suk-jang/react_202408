@@ -4,9 +4,28 @@ import type { ProductType } from "../types";
 
 type ReturnType<T> = Promise<AxiosResponse<T>>;
 
+// Axios 인스턴스 생성
+const apiClient = axios.create({
+  baseURL: "/api", // 공통 base URL 설정
+});
+
+// 요청을 보낼 때마다 Authorization 헤더를 추가하는 인터셉터 설정
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("jwtToken"); // JWT 토큰을 로컬 스토리지나 다른 저장소에서 가져옴
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 export const getProducts = async (): Promise<ProductType[]> => {
   try {
-    const response: AxiosResponse<ProductType[]> = await axios.get("/api/product");
+    const response: AxiosResponse<ProductType[]> = await apiClient.get("/product/all");
     return response.data;
   } catch (error) {
     throw error;
@@ -17,7 +36,7 @@ export type { ProductType };
 
 export const getProduct = async (id: string): Promise<ProductType> => {
   try {
-    const response: AxiosResponse<ProductType> = await axios.get(`/api/product/${id}`);
+    const response: AxiosResponse<ProductType> = await apiClient.get(`/product/${id}`);
     return response.data;
   } catch (error) {
     throw error;
@@ -26,7 +45,7 @@ export const getProduct = async (id: string): Promise<ProductType> => {
 
 export const createProduct = async (newProduct: Omit<ProductType, "id" | "thumbnail">): ReturnType<{ product: ProductType }> => {
   try {
-    const response = await axios.post("/product", newProduct);
+    const response = await apiClient.post("/product", newProduct);
     return response;
   } catch (error) {
     throw error;
@@ -47,8 +66,9 @@ export const modifyThumbnail = async (productId: string, thumbnail: File): Retur
 
 export const deleteProduct = async (id: string) => {
   try {
-    const resposne = await axios.delete(`/api/product/${id}`);
-    return resposne;
+    const response = await apiClient.delete(`/delete/product/${id}`);
+
+    return response;
   } catch (error: any) {
     // 403 에러일 때 커스텀 에러 메시지 노출
     if (error.response && error.response.status === 403) {
@@ -63,7 +83,7 @@ export const deleteProduct = async (id: string) => {
 
 export const modifyProduct = async (updateProduct: ProductType) => {
   try {
-    const response = await axios.patch(`/product/${updateProduct.id}`, updateProduct);
+    const response = await apiClient.patch(`/product/${updateProduct.id}`, updateProduct);
     return response;
   } catch (error) {
     throw error;
