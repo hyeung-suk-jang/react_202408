@@ -13,7 +13,7 @@ import { API_SERVER_DOMAIN } from "../constants";
 const ProductPage = () => {
   const navigate = useNavigate();
   const { productId } = useParams<{ productId: string }>();
-  // const { addCarts } = useCart();
+  const { addCarts } = useCart();
 
   const { loading: getProductLoading, data } = useAsync(() => getProduct(productId!));
 
@@ -26,7 +26,7 @@ const ProductPage = () => {
 
   const handleAddCard = () => {
     if (product) {
-      // addCarts(product.id);
+      addCarts(product.id);
       setIsModalOpen(true);
     }
   };

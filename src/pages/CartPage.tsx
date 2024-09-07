@@ -1,17 +1,4 @@
-// CartPage.tsx
-import {
-  Box,
-  Button,
-  Card,
-  Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Grid,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Card, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Typography, CircularProgress } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CartItem } from "../components/cart";
@@ -19,12 +6,9 @@ import { useCart } from "../hooks";
 
 const CartPage = () => {
   const navigate = useNavigate();
-  const { carts } = useCart();
+  const { carts, loading } = useCart(); // loading 상태 추가
 
-  const totalPrice = carts.reduce(
-    (prev, cur) => prev + cur.price * cur.count,
-    0
-  );
+  const totalPrice = carts.reduce((prev, cur) => prev + cur.price * cur.count, 0);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -38,7 +22,10 @@ const CartPage = () => {
     navigate("/");
   };
 
-  
+  // 로딩 상태 처리
+  if (loading) {
+    return <CircularProgress />;
+  }
 
   return (
     <>
@@ -48,13 +35,7 @@ const CartPage = () => {
             <Typography variant="h4" sx={{ marginBottom: 2 }}>
               장바구니
             </Typography>
-            {carts.length === 0 ? (
-              <Typography variant="body1">
-                장바구니에 담긴 상품이 없습니다.
-              </Typography>
-            ) : (
-              carts.map((cart) => <CartItem key={cart.id} cart={cart} />)
-            )}
+            {carts.length === 0 ? <Typography variant="body1">장바구니에 담긴 상품이 없습니다.</Typography> : carts.map((cart) => <CartItem key={cart.id} cart={cart} />)}
           </Grid>
 
           <Grid item xs={12} sm={4}>
@@ -72,11 +53,7 @@ const CartPage = () => {
                 <Typography variant="h6" sx={{ marginBottom: 2 }}>
                   총 결제 금액: {totalPrice}원
                 </Typography>
-                <Button
-                  variant="contained"
-                  fullWidth
-                  onClick={handlePurchaseProduct}
-                >
+                <Button variant="contained" fullWidth onClick={handlePurchaseProduct}>
                   결제하기
                 </Button>
               </Card>
@@ -85,14 +62,8 @@ const CartPage = () => {
         </Grid>
       </Container>
 
-      <Dialog
-        open={isModalOpen}
-        onClose={handlePushHomePage}
-        aria-labelledby="responsive-dialog-title"
-      >
-        <DialogTitle id="responsive-dialog-title">
-          성공적으로 구매하였습니다.
-        </DialogTitle>
+      <Dialog open={isModalOpen} onClose={handlePushHomePage} aria-labelledby="responsive-dialog-title">
+        <DialogTitle id="responsive-dialog-title">성공적으로 구매하였습니다.</DialogTitle>
         <DialogContent>
           <DialogContentText>메인 페이지로 이동합니다.</DialogContentText>
         </DialogContent>
