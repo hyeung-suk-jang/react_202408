@@ -44,6 +44,10 @@ const ProductEditForm = () => {
     setExplanation(event.target.value);
   };
 
+  const { request: modifyProductRequest } = useAsync(modifyProduct, {
+    initialRequest: false,
+  });
+
   const { request: createProductRequest } = useAsync(createProduct, {
     initialRequest: false,
   });
@@ -55,6 +59,27 @@ const ProductEditForm = () => {
   const handlePushProductPage = () => {
     setIsModalOpen(false);
     navigate(`/product/${createdProductId}`);
+  };
+
+  // 상품 수정 제출 핸들러
+  const handleUpdateProduct = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    const updatedProduct: ProductType = {
+      id: productId!,
+      name,
+      price,
+      explanation,
+      thumbnail: "", // 썸네일은 별도 처리
+    };
+
+    await modifyProductRequest(updatedProduct);
+
+    if (thumbnail) {
+      await thumbnailUploadRequest(productId!, thumbnail);
+    }
+
+    setIsModalOpen(true); // 수정 완료 후 모달 오픈
   };
 
   const handleCreateProduct = async (event: React.FormEvent) => {
@@ -84,7 +109,7 @@ const ProductEditForm = () => {
         </Typography>
         <Box sx={{ display: "flex", justifyContent: "center", mb: 4 }}>{productData?.thumbnail && <img src={`${API_SERVER_DOMAIN}/${productData.thumbnail}`} alt={productData?.name} style={{ width: "100%", maxWidth: 400 }} />}</Box>
 
-        <form onSubmit={handleCreateProduct}>
+        <form onSubmit={handleUpdateProduct}>
           <TextField label="상품 이름" fullWidth value={name} onChange={handleNameChange} margin="normal" />
           <TextField label="가격" type="number" fullWidth value={price} onChange={handlePriceChange} margin="normal" />
           <TextField label="상품 설명" fullWidth multiline rows={4} value={explanation} onChange={handleExplanationChange} margin="normal" />
@@ -104,9 +129,9 @@ const ProductEditForm = () => {
       </Container>
 
       <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)} aria-labelledby="responsive-dialog-title">
-        <DialogTitle id="responsive-dialog-title">상품을 성공적으로 추가했습니다.</DialogTitle>
+        <DialogTitle id="responsive-dialog-title">상품을 성공적으로 수정했습니다.</DialogTitle>
         <DialogContent>
-          <DialogContentText>확인을 누르면 상품상세 페이지로 이동합니다.</DialogContentText>
+          <DialogContentText>확인을 누르면 상품 상세 페이지로 이동합니다.</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handlePushProductPage} autoFocus>

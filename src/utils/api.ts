@@ -57,7 +57,7 @@ export const modifyThumbnail = async (productId: string, thumbnail: File): Retur
     const formData = new FormData();
     formData.append("thumbnail", thumbnail);
 
-    const response = axios.patch(`/product/thumbnail/${productId}`, formData);
+    const response = await apiClient.patch(`/edit/product/thumbnail/${productId}`, formData);
     return response;
   } catch (error) {
     throw error;
@@ -83,7 +83,7 @@ export const deleteProduct = async (id: string) => {
 
 export const modifyProduct = async (updateProduct: ProductType) => {
   try {
-    const response = await apiClient.patch(`/product/${updateProduct.id}`, updateProduct);
+    const response = await apiClient.patch(`/edit/product/${updateProduct.id}`, updateProduct);
     return response;
   } catch (error) {
     throw error;
