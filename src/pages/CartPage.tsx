@@ -38,6 +38,8 @@ const CartPage = () => {
     navigate("/");
   };
 
+  
+
   return (
     <>
       <Container fixed>
