@@ -1,12 +1,18 @@
 // ProductCreateForm.tsx
-import { Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Typography } from "@mui/material";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Box, Button, Container, Dialog, CircularProgress, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Typography } from "@mui/material";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { ThumbnailUploader } from ".";
 import useAsync from "../../hooks/useAsync";
-import { createProduct, modifyThumbnail } from "../../utils/api";
+import { getProduct, deleteProduct, modifyProduct, createProduct, modifyThumbnail } from "../../utils/api";
+
+import type { ProductType } from "../../types";
+import { API_SERVER_DOMAIN } from "../../constants";
 
 const ProductEditForm = () => {
+  const { productId } = useParams<{ productId: string }>(); // URL에서 productId 가져옴
+  const navigate = useNavigate();
+
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [explanation, setExplanation] = useState("");
@@ -14,7 +20,17 @@ const ProductEditForm = () => {
   const [createdProductId, setCreatedProductId] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const navigate = useNavigate();
+  // 상품 데이터 가져오기 및 수정 API 요청
+  const { loading: getProductLoading, data: productData } = useAsync(() => getProduct(productId!));
+
+  // 상품 데이터를 상태값으로 설정하는 useEffect
+  useEffect(() => {
+    if (productData) {
+      setName(productData.name);
+      setPrice(productData.price);
+      setExplanation(productData.explanation);
+    }
+  }, [productData]);
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
@@ -58,12 +74,16 @@ const ProductEditForm = () => {
     setIsModalOpen(true);
   };
 
+  if (!productData || getProductLoading) return <CircularProgress />;
+
   return (
     <>
       <Container maxWidth="sm">
         <Typography variant="h4" align="center" gutterBottom>
           상품 수정하기
         </Typography>
+        <Box sx={{ display: "flex", justifyContent: "center", mb: 4 }}>{productData?.thumbnail && <img src={`${API_SERVER_DOMAIN}/${productData.thumbnail}`} alt={productData?.name} style={{ width: "100%", maxWidth: 400 }} />}</Box>
+
         <form onSubmit={handleCreateProduct}>
           <TextField label="상품 이름" fullWidth value={name} onChange={handleNameChange} margin="normal" />
           <TextField label="가격" type="number" fullWidth value={price} onChange={handlePriceChange} margin="normal" />

@@ -51,8 +51,8 @@ const ProductPage = () => {
     handlePushHomePage();
   };
 
-  if (!productId || !data) return <NotFoundPage />;
-  if (getProductLoading || deleteProductLoading) return <CircularProgress />;
+  if (!productId) return <NotFoundPage />;
+  if (!data || getProductLoading || deleteProductLoading) return <CircularProgress />;
 
   const product = data;
 
