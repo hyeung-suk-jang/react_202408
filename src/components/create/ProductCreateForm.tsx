@@ -1,15 +1,5 @@
 // ProductCreateForm.tsx
-import {
-  Button,
-  Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ThumbnailUploader } from ".";
@@ -34,9 +24,7 @@ const ProductCreateForm = () => {
     setPrice(Number(event.target.value));
   };
 
-  const handleExplanationChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
+  const handleExplanationChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setExplanation(event.target.value);
   };
 
@@ -63,10 +51,7 @@ const ProductCreateForm = () => {
     });
 
     if (thumbnail) {
-      await thumbnailUploadRequest(
-        createProductResponse.data.product.id,
-        thumbnail
-      );
+      await thumbnailUploadRequest(createProductResponse.data.product.id, thumbnail);
     }
 
     setCreatedProductId(createProductResponse.data.product.id);
@@ -80,34 +65,10 @@ const ProductCreateForm = () => {
           상품 생성
         </Typography>
         <form onSubmit={handleCreateProduct}>
-          <TextField
-            label="상품 이름"
-            fullWidth
-            value={name}
-            onChange={handleNameChange}
-            margin="normal"
-          />
-          <TextField
-            label="가격"
-            type="number"
-            fullWidth
-            value={price}
-            onChange={handlePriceChange}
-            margin="normal"
-          />
-          <TextField
-            label="상품 설명"
-            fullWidth
-            multiline
-            rows={4}
-            value={explanation}
-            onChange={handleExplanationChange}
-            margin="normal"
-          />
-          <ThumbnailUploader
-            value={thumbnail}
-            onChange={(file) => setThumbnail(file)}
-          />
+          <TextField label="상품 이름" fullWidth value={name} onChange={handleNameChange} margin="normal" />
+          <TextField label="가격" fullWidth value={price} onChange={handlePriceChange} margin="normal" />
+          <TextField label="상품 설명" fullWidth multiline rows={4} value={explanation} onChange={handleExplanationChange} margin="normal" />
+          <ThumbnailUploader value={thumbnail} onChange={(file) => setThumbnail(file)} />
           <Button
             type="submit"
             variant="contained"
@@ -122,18 +83,10 @@ const ProductCreateForm = () => {
         </form>
       </Container>
 
-      <Dialog
-        open={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        aria-labelledby="responsive-dialog-title"
-      >
-        <DialogTitle id="responsive-dialog-title">
-          상품을 성공적으로 추가했습니다.
-        </DialogTitle>
+      <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)} aria-labelledby="responsive-dialog-title">
+        <DialogTitle id="responsive-dialog-title">상품을 성공적으로 추가했습니다.</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            확인을 누르면 상품상세 페이지로 이동합니다.
-          </DialogContentText>
+          <DialogContentText>확인을 누르면 상품상세 페이지로 이동합니다.</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handlePushProductPage} autoFocus>

@@ -45,7 +45,7 @@ export const getProduct = async (id: string): Promise<ProductType> => {
 
 export const createProduct = async (newProduct: Omit<ProductType, "id" | "thumbnail">): ReturnType<{ product: ProductType }> => {
   try {
-    const response = await apiClient.post("/product", newProduct);
+    const response = await apiClient.post("/create/product", newProduct);
     return response;
   } catch (error) {
     throw error;
