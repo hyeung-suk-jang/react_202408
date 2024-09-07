@@ -58,7 +58,7 @@ const ProductEditForm = () => {
 
   const handlePushProductPage = () => {
     setIsModalOpen(false);
-    navigate(`/product/${createdProductId}`);
+    navigate(`/product/${productId}`);
   };
 
   // 상품 수정 제출 핸들러
